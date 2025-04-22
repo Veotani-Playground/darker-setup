@@ -1,0 +1,46 @@
+name: master → Wiki mirror
+on:
+  push:
+    branches: [master]        # watch master (change if your default branch is main)
+
+permissions:
+  contents: write             # needed to push into the wiki repo
+
+jobs:
+  mirror-master:
+    if: ${{ github.actor != 'github-actions[bot]' }}   # ⬅️ skip our own mirror commits
+    runs-on: ubuntu-latest
+
+    steps:
+      # Code repository
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          path: main
+
+      # Wiki repository
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki
+
+      # Copy everything except .github into the wiki repo root
+      - name: Sync repo → wiki
+        run: |
+          rsync -a --delete \
+                --exclude '.git' \
+                --exclude '.github/' \
+                main/ wiki/
+
+      # Commit & push to the wiki repo (its default branch is also called master)
+      - name: Commit & push to wiki
+        working-directory: wiki
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Wiki already up to date"; exit 0
+          fi
+          git commit -m "chore: sync master → wiki (${GITHUB_SHA})"
+          git push origin HEAD:master
