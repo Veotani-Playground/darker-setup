@@ -1,0 +1,47 @@
+name: Mirror wiki
+
+on:
+  gollum
+
+permissions:
+  contents: write
+
+jobs:
+  mirror-wiki:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: master
+
+      - name: Checkout wiki repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki-src            # <repo>.wiki.git clone
+
+      - name: Copy wiki into code repo
+        run: |
+          rsync -a --delete --exclude '.git' wiki-src/ master/
+
+      # 4️⃣  Commit & push only if there are changes
+      - name: Commit and push
+        working-directory: main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Stage changes made by rsync
+          git add wiki
+
+          # Skip if nothing really changed
+          if git diff --cached --quiet; then
+            echo "No wiki changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: sync wiki (${GITHUB_SHA})"
+          git push origin master     # push back to master
