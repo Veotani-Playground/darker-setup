@@ -1,7 +1,6 @@
 name: Mirror wiki
 
-on:
-  gollum
+on: gollum
 
 permissions:
   contents: write
