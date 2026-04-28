@@ -7,8 +7,8 @@
     "email": "support@openai.com",
     "url": "https://openai.com/"
   },
-  "homepage": "https://github.com/",
-  "repository": "https://github.com/openai/plugins",
+  "homepage": "https://github.com/Veotani-Playground/darker-setup",
+  "repository": "https://github.com/Veotani-Playground/darker-setup",
   "license": "MIT",
   "keywords": [
     "github",
@@ -30,7 +30,7 @@
       "Interactive",
       "Write"
     ],
-    "websiteURL": "https://github.com/",
+    "websiteURL": "https://github.com/Veotani-Playground/darker-setup",
     "privacyPolicyURL": "https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement",
     "termsOfServiceURL": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
     "defaultPrompt": [
